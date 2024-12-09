@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_home">
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="com.example.myapplication.presentation.fragments.home.HomeFragment"
+        android:label="@string/title_home"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_navigation_home_to_habitFragment"
+            app:destination="@id/habitFragment" />
+        <action
+            android:id="@+id/action_navigation_home_to_habitEditFragment"
+            app:destination="@id/habitEditFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_progress"
+        android:name="com.example.myapplication.presentation.fragments.progress.ProgressFragment"
+        android:label="@string/progress"
+        tools:layout="@layout/fragment_progress" />
+
+    <fragment
+        android:id="@+id/navigation_profile"
+        android:name="com.example.myapplication.presentation.fragments.profile.ProfileFragment"
+        android:label="@string/profile"
+        tools:layout="@layout/fragment_profile" />
+    <fragment
+        android:id="@+id/habitFragment"
+        android:name="com.example.myapplication.presentation.fragments.habit.HabitFragment"
+        android:label="HabitFragment" />
+    <fragment
+        android:id="@+id/habitEditFragment"
+        android:name="com.example.myapplication.presentation.fragments.habit.HabitEditFragment"
+        android:label="HabitEditFragment" >
+
+        <argument
+            android:name="habit"
+            app:argType="com.example.myapplication.domain.model.HabitModel"
+            app:nullable="true"/>
+
+    </fragment>
+</navigation>
