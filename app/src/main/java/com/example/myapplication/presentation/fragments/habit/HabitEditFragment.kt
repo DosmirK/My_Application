@@ -19,7 +19,7 @@ class HabitEditFragment : Fragment() {
 
     private var _binding: FragmentHabitEditBinding? = null
     private val binding get() = _binding!!
-    private val viewModel by viewModels<HabitViewModel>()
+    private val viewModel: HabitViewModel by viewModels()
     private val args: HabitEditFragmentArgs by navArgs()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

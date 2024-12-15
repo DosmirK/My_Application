@@ -19,3 +19,10 @@ fun DayModel.toDayData(): DayData {
         isCompleted = isCompleted
     )
 }
+
+fun DayData.toDayModel(): DayModel {
+    return DayModel(
+        date = date,
+        isCompleted = isCompleted
+    )
+}

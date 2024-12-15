@@ -17,7 +17,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-class AppModule {
+object AppModule {
 
     @Singleton
     @Provides
@@ -37,13 +37,15 @@ class AppModule {
     fun provideDayDataDao(habitDatabase: HabitDatabase): DayDataDao =
         habitDatabase.getDayDataDao()
 
-    @Singleton
     @Provides
-    fun provideHabitRepository(habitDao: HabitDataDao): HabitRepositoryImpl =
-        HabitRepositoryImpl(habitDao)
+    @Singleton
+    fun provideHabitRepository(habitDao: HabitDataDao): HabitRepository {
+        return HabitRepositoryImpl(habitDao)
+    }
 
-    @Singleton
     @Provides
-    fun provideHabitUseCase(habitRepository: HabitRepository): HabitUseCase =
-        HabitUseCase(habitRepository)
+    @Singleton
+    fun provideHabitUseCase(habitRepository: HabitRepository): HabitUseCase {
+        return HabitUseCase(habitRepository)
+    }
 }

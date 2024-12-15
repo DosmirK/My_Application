@@ -10,22 +10,25 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.example.myapplication.data.common.PrefManager
 import com.example.myapplication.databinding.FragmentHomeBinding
+import com.example.myapplication.domain.model.DayModel
 import com.example.myapplication.domain.model.HabitModel
 import com.example.myapplication.domain.utils.UiState
 import com.example.myapplication.presentation.adapters.HabitsAdapter
+import com.example.myapplication.presentation.viewmodels.DayDataViewModel
 import com.example.myapplication.presentation.viewmodels.HabitViewModel
+import com.example.myapplication.presentation.viewmodels.SharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-
+import java.time.LocalDate
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
-    private val viewModel by viewModels<HabitViewModel>()
+    private val viewModel: HabitViewModel by viewModels()
+    private val viewModelDay: DayDataViewModel by viewModels()
     private val habitAdapter = HabitsAdapter(itemUpdated = this::habitUpdate, clickIsChecked = this::clickCheckBox )
 
 
@@ -80,22 +83,24 @@ class HomeFragment : Fragment() {
 
     private fun updateProgress() {
         viewLifecycleOwner.lifecycleScope.launch {
-            val pref = PrefManager(requireContext())
             val progress = viewModel.percentageHabitsCompleted()
             binding.progressBar.progress = progress
 
+            val newDayData = DayModel(
+                date = LocalDate.now().toString(),
+                isCompleted = progress == 100
+            )
+            viewModelDay.saveHabitDay(newDayData)
+
             if (progress == 100) {
-                pref.saveBoolean(true)
                 Toast.makeText(requireContext(), "Все привычки выполнены на 100%!", Toast.LENGTH_LONG).show()
             } else {
-                pref.saveBoolean(false)
                 Toast.makeText(requireContext(), "Привычки выполнены на $progress%", Toast.LENGTH_LONG).show()
             }
 
             Log.e("ololo", "progressBar: $progress")
         }
     }
-
 
     private fun initView() {
         binding.rvHabit.adapter = habitAdapter

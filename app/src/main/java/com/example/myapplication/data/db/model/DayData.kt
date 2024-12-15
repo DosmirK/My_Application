@@ -5,6 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "dayData")
 data class DayData(
-    @PrimaryKey val date: String, // Дата в формате "yyyy-MM-dd"
-    val isCompleted: Boolean // Цвет, например "#FF0000"
+    @PrimaryKey(autoGenerate = false)
+    val date: String, // Дата в формате "yyyy-MM-dd"
+    val isCompleted: Boolean // true - день выполнен (зеленый), false - не выполнен (красный)
 )

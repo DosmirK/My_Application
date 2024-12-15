@@ -1,11 +1,16 @@
 package com.example.myapplication.domain.repositories
 
 import com.example.myapplication.domain.model.DayModel
-import com.example.myapplication.domain.utils.DataState
-import kotlinx.coroutines.flow.Flow
+import java.time.LocalDate
 
 interface DayDataRepository {
 
-    suspend fun getProgressDataForMonth(month: String) : Flow<DataState<List<DayModel>>>
-    suspend fun addHabit(dayData: DayModel)
+    suspend fun insertOrUpdateHabitDay(habitDay: DayModel)
+
+    suspend fun getHabitDayByDate(date: String): DayModel?
+
+    suspend fun getAllHabitDays(): List<DayModel>
+
+    suspend fun getProgressForMonth(date: LocalDate): Map<String, Boolean>
+
 }

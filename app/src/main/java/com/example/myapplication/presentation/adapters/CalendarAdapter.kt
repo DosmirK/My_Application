@@ -1,33 +1,23 @@
 package com.example.myapplication.presentation.adapters
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
-import com.example.myapplication.data.common.PrefManager
+import com.example.myapplication.domain.model.DayModel
 import java.time.LocalDate
 
 class CalendarAdapter(
     private val daysOfMonth: ArrayList<String>,
-    private val onItemListener: OnItemListener,
-    private val selectedDate: LocalDate,
-    private val prefManager: PrefManager
+    private val habitDays: List<DayModel>,
+    private val selectedDate: LocalDate
 ) : RecyclerView.Adapter<CalendarAdapter.CalendarViewHolder>() {
 
     inner class CalendarViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val dayOfMonth: TextView = itemView.findViewById(R.id.cellDayText)
-
-        init {
-            itemView.setOnClickListener {
-                val dayText = dayOfMonth.text.toString()
-                // Разрешаем выбор только текущей даты
-                if (dayText == selectedDate.dayOfMonth.toString()) {
-                    onItemListener.onItemClick(adapterPosition, dayText)
-                }
-            }
-        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalendarViewHolder {
@@ -42,19 +32,21 @@ class CalendarAdapter(
         val day = daysOfMonth[position]
         holder.dayOfMonth.text = day
 
-        val isToday = day == selectedDate.dayOfMonth.toString() &&
-                selectedDate.monthValue == LocalDate.now().monthValue &&
-                selectedDate.year == LocalDate.now().year
-
-        if (isToday) {
-            val isChecked = prefManager.getBoolean()
-            if (isChecked){
-                holder.dayOfMonth.setBackgroundResource(R.drawable.bg_complited_day)
-            }else{
-                holder.dayOfMonth.setBackgroundResource(R.drawable.bg_missed_day)
+        if (day.isNotEmpty()) {
+            val date = LocalDate.of(selectedDate.year, selectedDate.month, day.toInt())
+            val habitDay = habitDays.find { it.date == date.toString() }
+            Log.e("ololo", "habitDay: $habitDay")
+            when {
+                habitDay?.isCompleted == true -> {
+                    holder.dayOfMonth.setBackgroundResource(R.drawable.bg_complited_day)
+                }
+                habitDay?.isCompleted == false -> {
+                    holder.dayOfMonth.setBackgroundResource(R.drawable.bg_missed_day)
+                }
+                else -> {
+                    holder.dayOfMonth.setBackgroundResource(R.drawable.bg_other_days)
+                }
             }
-        } else if (day.isNotEmpty()) {
-            holder.dayOfMonth.setBackgroundResource(R.drawable.bg_other_days)
         } else {
             holder.dayOfMonth.setBackgroundResource(0)
         }
@@ -62,9 +54,5 @@ class CalendarAdapter(
 
     override fun getItemCount(): Int {
         return daysOfMonth.size
-    }
-
-    interface OnItemListener {
-        fun onItemClick(position: Int, dayText: String?)
     }
 }

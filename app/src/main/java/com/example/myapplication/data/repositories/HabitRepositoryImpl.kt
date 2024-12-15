@@ -10,9 +10,7 @@ import com.example.myapplication.domain.utils.convertors.toHabit
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
 class HabitRepositoryImpl @Inject constructor(
     private val habitDao: HabitDataDao
 ): HabitRepository {
