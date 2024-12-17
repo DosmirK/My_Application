@@ -19,6 +19,11 @@ class HabitUseCase @Inject constructor(
         return habits
     }
 
+    suspend fun resetHabits() {
+       habitRepository.resetHabits()
+    }
+
+
     suspend fun addHabit(habit: HabitModel) = habitRepository.addHabit(habit)
     suspend fun habitUpdate(habit: HabitModel) = habitRepository.updateHabit(habit)
     suspend fun deleteHabit(habit: HabitModel) = habitRepository.deleteHabit(habit)

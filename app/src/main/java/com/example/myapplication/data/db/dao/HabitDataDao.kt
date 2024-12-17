@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.example.myapplication.data.db.model.Habit
+import com.example.myapplication.domain.model.HabitModel
 
 @Dao
 interface HabitDataDao {
@@ -19,6 +20,9 @@ interface HabitDataDao {
 
     @Update
     suspend fun update(habit: Habit)
+
+    @Query("UPDATE habits SET isCompleted = 0")
+    suspend fun resetAllHabits()
 
     @Query("SELECT * FROM habits")
     suspend fun getAllHabits(): List<Habit>

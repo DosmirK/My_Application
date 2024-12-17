@@ -1,11 +1,12 @@
 package com.example.myapplication.presentation.activity
 
+import android.os.Build
 import android.os.Bundle
+import android.view.WindowInsetsController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.myapplication.R
 import com.example.myapplication.databinding.ActivityMainBinding
@@ -26,5 +27,16 @@ class MainActivity : AppCompatActivity() {
 
         val navController = findNavController(R.id.nav_host_fragment_activity_main)
         navView.setupWithNavController(navController)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            window.insetsController?.setSystemBarsAppearance(
+                0,
+                WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS
+            )
+            window.navigationBarColor = ContextCompat.getColor(this, R.color.dark_green)
+        } else {
+            @Suppress("DEPRECATION")
+            window.navigationBarColor = ContextCompat.getColor(this, R.color.dark_green)
+        }
     }
 }

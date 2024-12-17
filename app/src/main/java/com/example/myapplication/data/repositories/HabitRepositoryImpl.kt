@@ -14,6 +14,11 @@ import javax.inject.Inject
 class HabitRepositoryImpl @Inject constructor(
     private val habitDao: HabitDataDao
 ): HabitRepository {
+
+    override suspend fun resetHabits() {
+        habitDao.resetAllHabits()
+    }
+
     override suspend fun getAllHabits(): Flow<DataState<List<HabitModel>>> =
         flow {
             emit(DataState.Loading())

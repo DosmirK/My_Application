@@ -31,6 +31,13 @@ class HabitViewModel @Inject constructor(
     private val _habitDays = MutableLiveData<List<DayModel>>()
     val habitDays: LiveData<List<DayModel>> get() = _habitDays
 
+    fun resetAllHabits() {
+        viewModelScope.launch {
+            habitUseCase.resetHabits()
+        }
+    }
+
+
     fun getAllHabits(){
         viewModelScope.launch{
             habitUseCase.getAllHabits().collect {

@@ -7,14 +7,32 @@
     android:padding="16dp"
     tools:context=".presentation.fragments.home.HomeFragment">
 
-    <ProgressBar
-        android:id="@+id/progressBar"
-        style="@android:style/Widget.ProgressBar.Horizontal"
-        android:progressTint="@color/green"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:progress="0"
-        tools:ignore="MissingConstraints" />
+        android:layout_margin="16dp"
+        tools:ignore="MissingConstraints">
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="@android:style/Widget.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:progressTint="@color/green"
+            android:progress="0"
+            android:max="100" />
+
+        <TextView
+            android:id="@+id/progressText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="0%"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+
+    </FrameLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_habit"
@@ -31,11 +49,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:backgroundTint="@color/purple_500"
+        android:backgroundTint="@color/dark_green"
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="44dp"
-        app:srcCompat="@android:drawable/ic_input_add"
+        android:src="@drawable/ic_add"
         tools:ignore="MissingConstraints" />
 
     <com.airbnb.lottie.LottieAnimationView

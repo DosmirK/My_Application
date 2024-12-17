@@ -17,7 +17,6 @@ import com.example.myapplication.domain.utils.UiState
 import com.example.myapplication.presentation.adapters.HabitsAdapter
 import com.example.myapplication.presentation.viewmodels.DayDataViewModel
 import com.example.myapplication.presentation.viewmodels.HabitViewModel
-import com.example.myapplication.presentation.viewmodels.SharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -84,19 +83,15 @@ class HomeFragment : Fragment() {
     private fun updateProgress() {
         viewLifecycleOwner.lifecycleScope.launch {
             val progress = viewModel.percentageHabitsCompleted()
+            val progressText = "$progress%"
             binding.progressBar.progress = progress
+            binding.progressText.text = progressText
 
             val newDayData = DayModel(
                 date = LocalDate.now().toString(),
                 isCompleted = progress == 100
             )
             viewModelDay.saveHabitDay(newDayData)
-
-            if (progress == 100) {
-                Toast.makeText(requireContext(), "Все привычки выполнены на 100%!", Toast.LENGTH_LONG).show()
-            } else {
-                Toast.makeText(requireContext(), "Привычки выполнены на $progress%", Toast.LENGTH_LONG).show()
-            }
 
             Log.e("ololo", "progressBar: $progress")
         }
