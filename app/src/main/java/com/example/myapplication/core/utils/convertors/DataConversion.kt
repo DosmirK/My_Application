@@ -1,4 +1,4 @@
-package com.example.myapplication.domain.utils.convertors
+package com.example.myapplication.core.utils.convertors
 
 import com.example.myapplication.data.db.model.DayData
 import com.example.myapplication.data.db.model.Habit

@@ -1,11 +1,11 @@
-package com.example.myapplication.domain.usecase
+package com.example.myapplication.domain.usecase.dayusecase
 
-import com.example.myapplication.data.repositories.DayDataRepositoryImpl
 import com.example.myapplication.domain.model.DayModel
+import com.example.myapplication.domain.repositories.dayrepository.DayReadOnlyRepository
 import javax.inject.Inject
 
 class GetAllHabitDaysUseCase @Inject constructor(
-    private val repository: DayDataRepositoryImpl
+    private val repository: DayReadOnlyRepository
 ) {
 
     suspend fun execute(): List<DayModel> {

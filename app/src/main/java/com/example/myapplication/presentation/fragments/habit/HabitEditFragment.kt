@@ -10,7 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.myapplication.databinding.FragmentHabitEditBinding
-import com.example.myapplication.presentation.viewmodels.HabitViewModel
+import com.example.myapplication.presentation.viewmodels.habitviewmodel.WriteHabitViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -19,7 +19,9 @@ class HabitEditFragment : Fragment() {
 
     private var _binding: FragmentHabitEditBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: HabitViewModel by viewModels()
+
+    private val habitViewModel : WriteHabitViewModel by viewModels()
+
     private val args: HabitEditFragmentArgs by navArgs()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,7 +47,7 @@ class HabitEditFragment : Fragment() {
             viewLifecycleOwner.lifecycleScope.launch {
                 args.habit?.let {
                     val habit = it
-                    viewModel.deleteHabit(habit)
+                    habitViewModel.deleteHabit(habit)
 
                 }
             }
@@ -59,7 +61,7 @@ class HabitEditFragment : Fragment() {
                    args.habit?.let {
                        val habit = it
                        val name = binding.editText.text.toString()
-                       viewModel.updateHabit(habit.copy(id = habit.id, name = name, isCompleted = habit.isCompleted))
+                       habitViewModel.updateHabit(habit.copy(id = habit.id, name = name, isCompleted = habit.isCompleted))
 
                    }
             }

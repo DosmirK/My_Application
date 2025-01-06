@@ -1,4 +1,4 @@
-package com.example.myapplication.domain.utils
+package com.example.myapplication.core.state
 
 sealed class DataState<T> (
     val data: T? = null,

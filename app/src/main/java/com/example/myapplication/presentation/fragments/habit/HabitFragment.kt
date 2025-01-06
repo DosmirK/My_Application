@@ -10,7 +10,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import com.example.myapplication.databinding.FragmentHabitBinding
 import com.example.myapplication.domain.model.HabitModel
-import com.example.myapplication.presentation.viewmodels.HabitViewModel
+import com.example.myapplication.presentation.viewmodels.habitviewmodel.WriteHabitViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -19,7 +19,8 @@ class HabitFragment : Fragment() {
 
     private var _binding: FragmentHabitBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: HabitViewModel by viewModels()
+
+    private val habitViewModel : WriteHabitViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,8 +38,8 @@ class HabitFragment : Fragment() {
 
     private fun initListeners() {
         binding.btnAdd.setOnClickListener {
-            viewModel.viewModelScope.launch {
-                viewModel.addHabit(
+            habitViewModel.viewModelScope.launch {
+                habitViewModel.addHabit(
                     HabitModel(
                         name = binding.editText.text.toString(),
                         id = 0

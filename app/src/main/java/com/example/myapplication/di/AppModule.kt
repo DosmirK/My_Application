@@ -5,9 +5,6 @@ import androidx.room.Room
 import com.example.myapplication.data.db.HabitDatabase
 import com.example.myapplication.data.db.dao.DayDataDao
 import com.example.myapplication.data.db.dao.HabitDataDao
-import com.example.myapplication.data.repositories.HabitRepositoryImpl
-import com.example.myapplication.domain.repositories.HabitRepository
-import com.example.myapplication.domain.usecase.HabitUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -37,15 +34,4 @@ object AppModule {
     fun provideDayDataDao(habitDatabase: HabitDatabase): DayDataDao =
         habitDatabase.getDayDataDao()
 
-    @Provides
-    @Singleton
-    fun provideHabitRepository(habitDao: HabitDataDao): HabitRepository {
-        return HabitRepositoryImpl(habitDao)
-    }
-
-    @Provides
-    @Singleton
-    fun provideHabitUseCase(habitRepository: HabitRepository): HabitUseCase {
-        return HabitUseCase(habitRepository)
-    }
 }

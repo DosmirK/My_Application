@@ -1,21 +1,20 @@
 package com.example.myapplication.presentation.fragments.progress
 
+import android.annotation.SuppressLint
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.myapplication.data.common.PrefManager
 import com.example.myapplication.databinding.FragmentProgressBinding
 import com.example.myapplication.domain.model.DayModel
 import com.example.myapplication.presentation.adapters.CalendarAdapter
 import com.example.myapplication.presentation.viewmodels.DayDataViewModel
-import com.example.myapplication.presentation.viewmodels.SharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDate
 import java.time.YearMonth
@@ -27,7 +26,6 @@ class ProgressFragment : Fragment() {
     private var _binding: FragmentProgressBinding? = null
     private val binding get() = _binding!!
     private val viewModel: DayDataViewModel by viewModels()
-    private val sharedViewModel: SharedViewModel by viewModels()
     private var selectedDate: LocalDate = LocalDate.now()
 
     override fun onCreateView(
@@ -39,8 +37,11 @@ class ProgressFragment : Fragment() {
         return binding.root
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        viewModel.fetchHabitsProgress(selectedDate)
 
         binding.btnPrev.setOnClickListener {
             selectedDate = selectedDate.minusMonths(1)
@@ -55,13 +56,31 @@ class ProgressFragment : Fragment() {
         viewModel.habitsProgress.observe(viewLifecycleOwner) { progressData ->
             val habitDays = mapToDayModelList(progressData)
             setMonthView(habitDays)
+            calculateCompletionPercentage(habitDays)
         }
 
-        sharedViewModel.habitProgress.observe(viewLifecycleOwner) { progressData ->
-            setMonthView(progressData)
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun calculateCompletionPercentage(days: List<DayModel>) {
+
+        val totalDays = days.size.toFloat()
+
+        val completedDays = days.count { it.isCompleted }
+        val completionPercentage = (completedDays * 100) / totalDays
+        Log.d("ProgressFragment", "Days: ${days.count {it.isCompleted}} \n $completionPercentage \n $totalDays")
+        if (completionPercentage >= 80) {
+            binding.tvProgressProcent.setTextColor(Color.GREEN)
+        } else {
+            binding.tvProgressProcent.setTextColor(Color.RED)
         }
 
-        viewModel.fetchHabitsProgress(selectedDate)
+        if (completionPercentage.isNaN()){
+            binding.tvProgressProcent.text = "Нет данных по этому месяцу."
+        }else{
+            binding.tvProgressProcent.text = "Выполнено за месяц: $completionPercentage%"
+        }
+
     }
 
     private fun mapToDayModelList(progressData: Map<String, Boolean>): List<DayModel> {

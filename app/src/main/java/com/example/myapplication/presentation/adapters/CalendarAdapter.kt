@@ -33,17 +33,32 @@ class CalendarAdapter(
         holder.dayOfMonth.text = day
 
         if (day.isNotEmpty()) {
+            // Получаем дату для текущего дня
             val date = LocalDate.of(selectedDate.year, selectedDate.month, day.toInt())
             val habitDay = habitDays.find { it.date == date.toString() }
             Log.e("ololo", "habitDay: $habitDay")
+
+            val today = LocalDate.now()
+
             when {
-                habitDay?.isCompleted == true -> {
-                    holder.dayOfMonth.setBackgroundResource(R.drawable.bg_complited_day)
+                date.isBefore(today) -> {
+                    when (habitDay?.isCompleted) {
+                        true -> {
+                            holder.dayOfMonth.setBackgroundResource(R.drawable.bg_complited_day)
+                        }
+                        false, null -> {
+                            holder.dayOfMonth.setBackgroundResource(R.drawable.bg_missed_day)
+                        }
+                    }
                 }
-                habitDay?.isCompleted == false -> {
-                    holder.dayOfMonth.setBackgroundResource(R.drawable.bg_missed_day)
+                date.isEqual(today) -> {
+                    if (habitDay?.isCompleted == true) {
+                        holder.dayOfMonth.setBackgroundResource(R.drawable.bg_complited_day)
+                    } else {
+                        holder.dayOfMonth.setBackgroundResource(R.drawable.bg_other_days)
+                    }
                 }
-                else -> {
+                date.isAfter(today) -> {
                     holder.dayOfMonth.setBackgroundResource(R.drawable.bg_other_days)
                 }
             }

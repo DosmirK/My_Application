@@ -10,13 +10,17 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.example.myapplication.data.common.DateManager
 import com.example.myapplication.databinding.FragmentHomeBinding
 import com.example.myapplication.domain.model.DayModel
 import com.example.myapplication.domain.model.HabitModel
-import com.example.myapplication.domain.utils.UiState
+import com.example.myapplication.core.state.UiState
 import com.example.myapplication.presentation.adapters.HabitsAdapter
 import com.example.myapplication.presentation.viewmodels.DayDataViewModel
-import com.example.myapplication.presentation.viewmodels.HabitViewModel
+import com.example.myapplication.presentation.viewmodels.habitviewmodel.GetAllHabitViewModel
+import com.example.myapplication.presentation.viewmodels.habitviewmodel.HabitStatsViewModel
+import com.example.myapplication.presentation.viewmodels.habitviewmodel.ResetHabitViewModel
+import com.example.myapplication.presentation.viewmodels.habitviewmodel.WriteHabitViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -26,10 +30,12 @@ class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: HabitViewModel by viewModels()
+    private val habitStatsVM : HabitStatsViewModel by viewModels()
+    private val habitViewModel : WriteHabitViewModel by viewModels()
+    private val getAllHabitVM : GetAllHabitViewModel by  viewModels()
+    private val resetHabitVM : ResetHabitViewModel by viewModels()
     private val viewModelDay: DayDataViewModel by viewModels()
     private val habitAdapter = HabitsAdapter(itemUpdated = this::habitUpdate, clickIsChecked = this::clickCheckBox )
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,10 +49,20 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        checkAndResetHabits()
+
         setupData()
         initView()
         initListeners()
         updateProgress()
+    }
+
+    private fun checkAndResetHabits() {
+        val dateManager = DateManager(requireContext())
+        if (dateManager.isDateChanged()) {
+            resetHabitVM.resetAllHabits()
+            dateManager.saveCurrentDate(LocalDate.now().toString())
+        }
     }
 
     private fun initListeners() {
@@ -57,8 +73,8 @@ class HomeFragment : Fragment() {
 
     private fun setupData() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.getAllHabits()
-            viewModel.habits.collect { result ->
+            getAllHabitVM.getAllHabits()
+            getAllHabitVM.habits.collect { result ->
                 Log.e("ololo", "data: ${result.data}")
                 when (result) {
                     is UiState.Loading -> binding.animLoading.visibility = View.VISIBLE
@@ -82,7 +98,7 @@ class HomeFragment : Fragment() {
 
     private fun updateProgress() {
         viewLifecycleOwner.lifecycleScope.launch {
-            val progress = viewModel.percentageHabitsCompleted()
+            val progress = habitStatsVM.percentageHabitsCompleted()
             val progressText = "$progress%"
             binding.progressBar.progress = progress
             binding.progressText.text = progressText
@@ -106,7 +122,7 @@ class HomeFragment : Fragment() {
 
     private fun clickCheckBox(habit: HabitModel){
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.updateHabit(
+            habitViewModel.updateHabit(
                 habit.copy(
                     isCompleted = habit.isCompleted,
                     id = habit.id,
@@ -114,7 +130,7 @@ class HomeFragment : Fragment() {
                 )
             )
             viewLifecycleOwner.lifecycleScope.launch {
-                viewModel.habits.collect { newData ->
+                getAllHabitVM.habits.collect { newData ->
                     when (newData) {
                         is UiState.Loading -> binding.animLoading.visibility = View.VISIBLE
 

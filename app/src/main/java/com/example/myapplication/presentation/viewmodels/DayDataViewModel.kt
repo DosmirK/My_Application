@@ -5,9 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myapplication.domain.model.DayModel
-import com.example.myapplication.domain.usecase.GetAllHabitDaysUseCase
-import com.example.myapplication.domain.usecase.GetHabitDayUseCase
-import com.example.myapplication.domain.usecase.SaveHabitDayUseCase
+import com.example.myapplication.domain.usecase.dayusecase.GetAllHabitDaysUseCase
+import com.example.myapplication.domain.usecase.dayusecase.GetHabitDayUseCase
+import com.example.myapplication.domain.usecase.dayusecase.SaveHabitDayUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDate

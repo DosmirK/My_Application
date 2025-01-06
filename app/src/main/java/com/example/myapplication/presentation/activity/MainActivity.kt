@@ -2,6 +2,7 @@ package com.example.myapplication.presentation.activity
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.WindowInsetsController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
@@ -9,6 +10,9 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.myapplication.R
+import com.example.myapplication.core.checkNotificationPermission
+import com.example.myapplication.core.notification.scheduleNotificationWork
+import com.example.myapplication.core.showNotificationPermissionDialog
 import com.example.myapplication.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -38,5 +42,13 @@ class MainActivity : AppCompatActivity() {
             @Suppress("DEPRECATION")
             window.navigationBarColor = ContextCompat.getColor(this, R.color.dark_green)
         }
+
+        if (!checkNotificationPermission(this)) {
+            showNotificationPermissionDialog(this)
+        } else {
+            scheduleNotificationWork(this)
+            Log.e("ololo", "Запуск задачи")
+        }
+
     }
 }

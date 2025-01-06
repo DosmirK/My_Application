@@ -1,12 +1,11 @@
-package com.example.myapplication.domain.usecase
+package com.example.myapplication.domain.usecase.dayusecase
 
-import com.example.myapplication.data.repositories.DayDataRepositoryImpl
-import com.example.myapplication.domain.model.DayModel
+import com.example.myapplication.domain.repositories.dayrepository.ProgressRepository
 import java.time.LocalDate
 import javax.inject.Inject
 
 class GetHabitDayUseCase @Inject constructor(
-    private val repository: DayDataRepositoryImpl
+    private val repository: ProgressRepository
 ) {
 
     suspend operator fun invoke(date: LocalDate): Map<String, Boolean> {

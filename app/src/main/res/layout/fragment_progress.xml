@@ -24,7 +24,6 @@
             android:background="@drawable/bg_calendar_button"
             android:textColor="@color/white"
             android:textStyle="bold"
-            android:onClick="previousMonthAction"
             android:textSize="20sp"/>
 
         <TextView
@@ -46,7 +45,6 @@
             android:background="@drawable/bg_calendar_button"
             android:textColor="@color/white"
             android:textStyle="bold"
-            android:onClick="nextMonthAction"
             android:textSize="20sp"/>
 
     </LinearLayout>
@@ -121,10 +119,22 @@
 
     </LinearLayout>
 
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/calendarRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <TextView
+        android:id="@+id/tv_progress_procent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="44dp"
+        android:textColor="@color/black"
+        android:padding="8dp"
+        android:background="@drawable/bg_progress_tv"
+        android:textSize="16sp"
+        android:text="Выполнено за месяц: 99%"
+        android:layout_gravity="center"/>
 
 </LinearLayout>
