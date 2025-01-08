@@ -61,7 +61,7 @@ class ProgressFragment : Fragment() {
 
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n", "DefaultLocale")
     private fun calculateCompletionPercentage(days: List<DayModel>) {
 
         val totalDays = days.size.toFloat()
@@ -69,6 +69,7 @@ class ProgressFragment : Fragment() {
         val completedDays = days.count { it.isCompleted }
         val completionPercentage = (completedDays * 100) / totalDays
         Log.d("ProgressFragment", "Days: ${days.count {it.isCompleted}} \n $completionPercentage \n $totalDays")
+        val formattedPercentage = String.format("%.2f", completionPercentage)
         if (completionPercentage >= 80) {
             binding.tvProgressProcent.setTextColor(Color.GREEN)
         } else {
@@ -78,7 +79,7 @@ class ProgressFragment : Fragment() {
         if (completionPercentage.isNaN()){
             binding.tvProgressProcent.text = "Нет данных по этому месяцу."
         }else{
-            binding.tvProgressProcent.text = "Выполнено за месяц: $completionPercentage%"
+            binding.tvProgressProcent.text = "Выполнено за месяц: $formattedPercentage%"
         }
 
     }

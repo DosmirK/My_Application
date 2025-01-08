@@ -31,7 +31,7 @@ class NotificationWorker(
 }
 
 fun scheduleNotificationWork(context: Context) {
-    val workRequest = PeriodicWorkRequestBuilder<NotificationWorker>(1, TimeUnit.HOURS)
+    val workRequest = PeriodicWorkRequestBuilder<NotificationWorker>(2, TimeUnit.HOURS)
         .build()
 
     val workManager = WorkManager.getInstance(context)

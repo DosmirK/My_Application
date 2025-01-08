@@ -2,6 +2,7 @@ package com.example.myapplication.di
 
 import android.content.Context
 import androidx.room.Room
+import com.example.myapplication.data.common.DateManager
 import com.example.myapplication.data.db.HabitDatabase
 import com.example.myapplication.data.db.dao.DayDataDao
 import com.example.myapplication.data.db.dao.HabitDataDao
@@ -33,5 +34,11 @@ object AppModule {
     @Provides
     fun provideDayDataDao(habitDatabase: HabitDatabase): DayDataDao =
         habitDatabase.getDayDataDao()
+
+    @Provides
+    @Singleton
+    fun provideDateManager(@ApplicationContext context: Context): DateManager {
+        return DateManager(context)
+    }
 
 }

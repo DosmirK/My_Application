@@ -10,6 +10,9 @@ import java.time.LocalDate
 @Dao
 interface DayDataDao {
 
+    @Query("SELECT * FROM dayData WHERE date = :date")
+    suspend fun getDayByDate(date: String): DayData?
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertOrUpdate(habitDay: DayData)
 
