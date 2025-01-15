@@ -12,6 +12,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.myapplication.R
 import com.example.myapplication.core.checkNotificationPermission
 import com.example.myapplication.core.notification.scheduleNotificationWork
+import com.example.myapplication.core.saveday.scheduleEndOfDayWork
 import com.example.myapplication.core.showNotificationPermissionDialog
 import com.example.myapplication.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -47,6 +48,7 @@ class MainActivity : AppCompatActivity() {
             showNotificationPermissionDialog(this)
         } else {
             scheduleNotificationWork(this)
+            scheduleEndOfDayWork(this)
             Log.e("ololo", "Запуск задачи")
         }
 

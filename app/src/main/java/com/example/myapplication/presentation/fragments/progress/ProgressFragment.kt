@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.databinding.FragmentProgressBinding
@@ -16,6 +17,7 @@ import com.example.myapplication.domain.model.DayModel
 import com.example.myapplication.presentation.adapters.CalendarAdapter
 import com.example.myapplication.presentation.viewmodels.DayDataViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
@@ -53,10 +55,12 @@ class ProgressFragment : Fragment() {
             viewModel.fetchHabitsProgress(selectedDate)
         }
 
-        viewModel.habitsProgress.observe(viewLifecycleOwner) { progressData ->
-            val habitDays = mapToDayModelList(progressData)
-            setMonthView(habitDays)
-            calculateCompletionPercentage(habitDays)
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.habitsProgress.collect { progressData ->
+                val habitDays = mapToDayModelList(progressData)
+                setMonthView(habitDays)
+                calculateCompletionPercentage(habitDays)
+            }
         }
 
     }

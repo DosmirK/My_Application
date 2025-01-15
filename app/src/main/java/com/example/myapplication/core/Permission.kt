@@ -40,7 +40,7 @@ fun requestNotificationAccess(activity: Activity) {
         AlertDialog.Builder(activity)
             .setTitle("Разрешение на показ уведомлений")
             .setMessage("Выша версия Android не поддерживает автоматический запрос разрешения." + "\n" +
-                    "Подалуйста дайте разрешение в ручную.")
+                    "Пожалуйста дайте разрешение в ручную.")
             .setPositiveButton("Ок") { dialog, _ ->
                 dialog.dismiss()
             }

@@ -93,9 +93,10 @@ class HomeFragment : Fragment() {
 
     private fun observeProgress() {
         viewLifecycleOwner.lifecycleScope.launch {
-            val progress = habitStatsVM.percentageHabitsCompleted()
-            updateProgressUI(progress)
-            saveProgressDay(progress)
+            habitStatsVM.percentageHabitsCompleted().collect { progress ->
+                updateProgressUI(progress)
+                saveProgressDay(progress)
+            }
         }
     }
 

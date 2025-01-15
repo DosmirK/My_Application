@@ -1,7 +1,5 @@
 package com.example.myapplication.presentation.viewmodels
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myapplication.domain.model.DayModel
@@ -9,6 +7,8 @@ import com.example.myapplication.domain.usecase.dayusecase.GetAllHabitDaysUseCas
 import com.example.myapplication.domain.usecase.dayusecase.GetHabitDayUseCase
 import com.example.myapplication.domain.usecase.dayusecase.SaveHabitDayUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
@@ -20,30 +20,36 @@ class DayDataViewModel @Inject constructor(
     private val getAllHabitDaysUseCase: GetAllHabitDaysUseCase
 ) : ViewModel() {
 
-    private val _habitDays = MutableLiveData<List<DayModel>>()
-    val habitDays: LiveData<List<DayModel>> get() = _habitDays
+    private val _habitDays = MutableStateFlow<List<DayModel>>(emptyList())
+    val habitDays: StateFlow<List<DayModel>> get() = _habitDays
 
-    private val _habitsProgress = MutableLiveData<Map<String, Boolean>>()
-    val habitsProgress: LiveData<Map<String, Boolean>> get() = _habitsProgress
+    private val _habitsProgress = MutableStateFlow<Map<String, Boolean>>(emptyMap())
+    val habitsProgress: StateFlow<Map<String, Boolean>> get() = _habitsProgress
 
     fun loadHabitDays() {
         viewModelScope.launch {
-            val days = getAllHabitDaysUseCase.execute()
-            _habitDays.value = days
+            getAllHabitDaysUseCase.execute()
+                .collect { days ->
+                    _habitDays.value = days
+                }
         }
     }
 
     fun saveHabitDay(habitDay: DayModel) {
         viewModelScope.launch {
             saveHabitDayUseCase.execute(habitDay)
-            loadHabitDays()
+                .collect {
+                    loadHabitDays()
+                }
         }
     }
 
     fun fetchHabitsProgress(date: LocalDate) {
         viewModelScope.launch {
-            val progressData = getHabitDayUseCase(date)
-            _habitsProgress.value = progressData
+            getHabitDayUseCase(date)
+                .collect { progressData ->
+                    _habitsProgress.value = progressData
+                }
         }
     }
 }

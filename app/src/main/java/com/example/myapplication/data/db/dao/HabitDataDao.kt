@@ -7,7 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.example.myapplication.data.db.model.Habit
-import com.example.myapplication.domain.model.HabitModel
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface HabitDataDao {
@@ -25,12 +25,11 @@ interface HabitDataDao {
     suspend fun resetAllHabits()
 
     @Query("SELECT * FROM habits")
-    suspend fun getAllHabits(): List<Habit>
+    fun getAllHabits(): Flow<List<Habit>>
 
     @Query("SELECT COUNT(*) FROM habits")
-    suspend fun getTotalHabitsCount(): Int
+    fun getTotalHabitsCount(): Flow<Int>
 
     @Query("SELECT COUNT(*) FROM habits WHERE isCompleted = 1")
-    suspend fun getCompletedHabitsCount(): Int
-
+    fun getCompletedHabitsCount(): Flow<Int>
 }

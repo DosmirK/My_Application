@@ -8,6 +8,7 @@ import com.example.myapplication.domain.model.HabitModel
 import com.example.myapplication.domain.repositories.habitrepository.ReadOnlyHabitRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class ReadOnlyHabitRepositoryImpl @Inject constructor(
@@ -18,13 +19,16 @@ class ReadOnlyHabitRepositoryImpl @Inject constructor(
         flow {
             emit(DataState.Loading())
             try {
-                val data = habitDao.getAllHabits().mapToHabitModel()
-                emit(DataState.Success(data))
-                Log.e("ololo", "dataRepost: $data")
+                habitDao.getAllHabits()
+                    .map { it.mapToHabitModel() }
+
+                    .collect { data ->
+                        emit(DataState.Success(data))
+                        Log.e("ololo", "dataRepost: $data")
+                    }
             } catch (e: Exception) {
                 emit(DataState.Error(e.localizedMessage))
                 Log.e("ololo", "errorRepost: ${e.localizedMessage}")
             }
         }
-
 }
