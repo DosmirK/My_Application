@@ -1,5 +1,6 @@
 package com.example.myapplication.presentation.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myapplication.domain.model.DayModel
@@ -46,8 +47,10 @@ class DayDataViewModel @Inject constructor(
 
     fun fetchHabitsProgress(date: LocalDate) {
         viewModelScope.launch {
+            Log.d("samal", "переданные данные в useCase: $date")
             getHabitDayUseCase(date)
                 .collect { progressData ->
+                    Log.d("samal", "viewModel: $progressData")
                     _habitsProgress.value = progressData
                 }
         }

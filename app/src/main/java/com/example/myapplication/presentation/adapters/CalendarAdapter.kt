@@ -34,7 +34,7 @@ class CalendarAdapter(
 
         if (day.isNotEmpty()) {
             val date = LocalDate.of(selectedDate.year, selectedDate.month, day.toInt())
-            val habitDay = habitDays.find { it.date == date.toString() }
+            val habitDay = habitDays.find { LocalDate.parse(it.date) == date }
             Log.e("ololo", "habitDay: $habitDay")
 
             val today = LocalDate.now()

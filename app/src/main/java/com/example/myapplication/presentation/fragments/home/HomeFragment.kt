@@ -2,12 +2,15 @@ package com.example.myapplication.presentation.fragments.home
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.example.myapplication.databinding.FragmentHomeBinding
 import com.example.myapplication.domain.model.DayModel
@@ -40,8 +43,8 @@ class HomeFragment : Fragment() {
 
     private val habitAdapter by lazy {
         HabitsAdapter(
-            itemUpdated = this::navigateToEditHabit,
-            clickIsChecked = this::updateHabitCompletion
+            itemUpdated = this::onHabitUpdated,
+            clickIsChecked = this::onHabitCompletionChanged
         )
     }
 
@@ -59,8 +62,7 @@ class HomeFragment : Fragment() {
 
         resetHabitsIfDateChanged()
         setupUI()
-        observeHabits()
-        observeProgress()
+        observeViewModels()
     }
 
     private fun resetHabitsIfDateChanged() {
@@ -78,32 +80,63 @@ class HomeFragment : Fragment() {
         }
     }
 
+    private fun observeViewModels() {
+        observeHabits()
+        observeProgress()
+    }
+
     private fun observeHabits() {
         viewLifecycleOwner.lifecycleScope.launch {
-            getAllHabitVM.getAllHabits()
-            getAllHabitVM.habits.collect { state ->
-                handleUiState(
-                    state = state,
-                    onSuccess = { habits -> habitAdapter.submitList(habits) },
-                    loadingView = binding.animLoading
-                )
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                getAllHabitVM.habits.collect { state ->
+                    handleUiState(
+                        state = state,
+                        onSuccess = { habits -> habitAdapter.submitList(habits) },
+                        loadingView = binding.animLoading
+                    )
+                }
             }
         }
     }
 
     private fun observeProgress() {
         viewLifecycleOwner.lifecycleScope.launch {
-            habitStatsVM.percentageHabitsCompleted().collect { progress ->
-                updateProgressUI(progress)
-                saveProgressDay(progress)
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                habitStatsVM.percentageHabitsCompleted().collect { progress ->
+                    updateProgressUI(progress)
+                    saveProgressDay(progress)
+                }
             }
+        }
+    }
+
+    private fun onHabitUpdated(habit: HabitModel) {
+        findNavController().navigate(
+            HomeFragmentDirections.actionNavigationHomeToHabitEditFragment(habit)
+        )
+    }
+
+    private fun onHabitCompletionChanged(habit: HabitModel) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            Log.d("ololo", "привычка: $habit")
+            habitViewModel.updateHabit(habit)
+            getAllHabitVM.refreshHabits()
+            updateProgressAfterHabitChange()
+        }
+    }
+
+    private suspend fun updateProgressAfterHabitChange() {
+        habitStatsVM.percentageHabitsCompleted().collect { progress ->
+            updateProgressUI(progress)
         }
     }
 
     @SuppressLint("SetTextI18n")
     private fun updateProgressUI(progress: Int) {
-        binding.progressBar.progress = progress
-        binding.progressText.text = "$progress%"
+        with(binding) {
+            progressBar.progress = progress
+            progressText.text = "$progress%"
+        }
     }
 
     private fun saveProgressDay(progress: Int) {
@@ -113,18 +146,6 @@ class HomeFragment : Fragment() {
             isCompleted = isCompleted
         )
         viewModelDay.saveHabitDay(newDayData)
-    }
-
-    private fun updateHabitCompletion(habit: HabitModel) {
-        viewLifecycleOwner.lifecycleScope.launch {
-            habitViewModel.updateHabit(habit)
-            getAllHabitVM.getAllHabits()
-            observeProgress()
-        }
-    }
-
-    private fun navigateToEditHabit(habit: HabitModel) {
-        findNavController().navigate(HomeFragmentDirections.actionNavigationHomeToHabitEditFragment(habit))
     }
 
     private fun <T> handleUiState(

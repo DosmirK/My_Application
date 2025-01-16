@@ -14,6 +14,9 @@ interface DayDataDao {
     @Query("SELECT * FROM dayData WHERE date = :date")
     fun getDayByDate(date: String): Flow<DayData?>
 
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertIfNotExists(habitDay: DayData)
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertOrUpdate(habitDay: DayData)
 

@@ -21,25 +21,36 @@ class GetAllHabitViewModel @Inject constructor(
     private var _habits = MutableStateFlow<UiState<List<HabitModel>>>(UiState.Loading())
     var habits: StateFlow<UiState<List<HabitModel>>> = _habits
 
-    fun getAllHabits(){
-        viewModelScope.launch{
-            useCase.getAllHabits().collect {
-                Log.e("ololo", "dataViewModel: ${it.data}")
+    init {
+        getAllHabits()
+    }
 
-                when (it){
-                    is DataState.Loading -> _habits.value = UiState.Loading()
+    private fun getAllHabits() {
+        viewModelScope.launch {
+            useCase.getAllHabits().collect { state ->
+
+                when (state) {
+                    is DataState.Loading -> {
+                        _habits.value = UiState.Loading()
+                    }
                     is DataState.Success -> {
-                        if (it.data != null) {
-                            _habits.value = UiState.Success(it.data)
-                        }else{
+                        if (state.data != null) {
+                            _habits.value = UiState.Success(state.data)
+                        } else {
                             _habits.value = UiState.Empty()
                         }
                     }
-                    is DataState.Error -> _habits.value = UiState.Error(it.message)
+                    is DataState.Error -> {
+                        Log.e("ololo", "Error: ${state.message}")
+                        _habits.value = UiState.Error(state.message)
+                    }
                 }
-                Log.e("ololo", "data_habits: ${_habits.value.data.toString()}")
             }
         }
+    }
+
+    fun refreshHabits() {
+        getAllHabits()
     }
 
 }

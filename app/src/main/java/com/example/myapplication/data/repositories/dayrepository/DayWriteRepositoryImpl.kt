@@ -20,4 +20,8 @@ class DayWriteRepositoryImpl @Inject constructor(
     override fun getDayByDate(date: String): Flow<DayModel?> {
         return dao.getDayByDate(date).map { it?.toDayModel() }
     }
+
+    suspend fun addHabitDay(habitDay: DayModel){
+        dao.insertIfNotExists(habitDay.toDayData())
+    }
 }

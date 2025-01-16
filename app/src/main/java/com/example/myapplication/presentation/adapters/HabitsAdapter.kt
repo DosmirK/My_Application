@@ -16,9 +16,9 @@ class HabitsAdapter (
 ): ListAdapter<HabitModel, HabitsAdapter.HabitViewHolder>(
     object : DiffUtil.ItemCallback<HabitModel>(){
         override fun areItemsTheSame(oldItem: HabitModel, newItem: HabitModel)
-                = oldItem == newItem
-        override fun areContentsTheSame(oldItem: HabitModel, newItem: HabitModel)
                 = oldItem.id == newItem.id
+        override fun areContentsTheSame(oldItem: HabitModel, newItem: HabitModel)
+                = oldItem == newItem
 
     }
 ) {
@@ -41,6 +41,8 @@ class HabitsAdapter (
     ) : RecyclerView.ViewHolder(binding.root) {
         fun onBind(habit: HabitModel) {
             binding.apply {
+                cbDone.setOnCheckedChangeListener(null)
+
                 cbDone.isChecked = habit.isCompleted
                 Log.e("ololo", "updateCB: ${habit.isCompleted}")
                 if (habit.isCompleted) {
@@ -51,10 +53,10 @@ class HabitsAdapter (
                 }
 
                 cbDone.setOnCheckedChangeListener { _, isChecked ->
-                    clickIsChecked(habit.copy(id = habit.id, isCompleted = isChecked))
+                    clickIsChecked(habit.copy(isCompleted = isChecked))
                     Log.e("ololo", "updateAdapter: $isChecked")
                     if (isChecked) {
-                        val styledText: CharSequence = Html.fromHtml("<s>${habit.name}</s>", 1)
+                        val styledText: CharSequence = Html.fromHtml("<s>${habit.name}</s>", Html.FROM_HTML_MODE_LEGACY)
                         tvHabit.text = styledText
                     } else {
                         tvHabit.text = habit.name

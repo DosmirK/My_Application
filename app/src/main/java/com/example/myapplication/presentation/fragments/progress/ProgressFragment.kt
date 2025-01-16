@@ -47,32 +47,49 @@ class ProgressFragment : Fragment() {
 
         binding.btnPrev.setOnClickListener {
             selectedDate = selectedDate.minusMonths(1)
+            Log.d("samal", "прошлый месяц: $selectedDate")
             viewModel.fetchHabitsProgress(selectedDate)
         }
 
         binding.btnNext.setOnClickListener {
             selectedDate = selectedDate.plusMonths(1)
+            Log.d("samal", "следующий месяц: $selectedDate")
             viewModel.fetchHabitsProgress(selectedDate)
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.habitsProgress.collect { progressData ->
-                val habitDays = mapToDayModelList(progressData)
+                Log.d("samal", "данные с collect: $progressData")
+                val habitDays = if (progressData.isNotEmpty()) {
+                    mapToDayModelList(progressData)
+                } else {
+                    emptyList()
+                }
+                Log.d("samal", "обработанные данные с collect: $habitDays")
                 setMonthView(habitDays)
                 calculateCompletionPercentage(habitDays)
             }
         }
+
 
     }
 
     @SuppressLint("SetTextI18n", "DefaultLocale")
     private fun calculateCompletionPercentage(days: List<DayModel>) {
 
-        val totalDays = days.size.toFloat()
+        if (days.isEmpty()) {
+            binding.tvProgressProcent.text = "Нет данных за этот месяц."
+            binding.tvProgressProcent.setTextColor(Color.RED)
+            return
+        }
+
+        val currentMonth = LocalDate.now().monthValue
+        val currentYear = LocalDate.now().year
+        val totalDays = YearMonth.of(currentYear, currentMonth).lengthOfMonth().toFloat()
 
         val completedDays = days.count { it.isCompleted }
         val completionPercentage = (completedDays * 100) / totalDays
-        Log.d("ProgressFragment", "Days: ${days.count {it.isCompleted}} \n $completionPercentage \n $totalDays")
+        Log.d("ProgressFragment", "Days: ${days.count { it.isCompleted }} \n $completionPercentage \n $totalDays")
         val formattedPercentage = String.format("%.2f", completionPercentage)
         if (completionPercentage >= 80) {
             binding.tvProgressProcent.setTextColor(Color.GREEN)
@@ -80,13 +97,13 @@ class ProgressFragment : Fragment() {
             binding.tvProgressProcent.setTextColor(Color.RED)
         }
 
-        if (completionPercentage.isNaN()){
+        if (completionPercentage.isNaN()) {
             binding.tvProgressProcent.text = "Нет данных по этому месяцу."
-        }else{
+        } else {
             binding.tvProgressProcent.text = "Выполнено за месяц: $formattedPercentage%"
         }
-
     }
+
 
     private fun mapToDayModelList(progressData: Map<String, Boolean>): List<DayModel> {
         return progressData.map { (date, isCompleted) ->

@@ -10,6 +10,7 @@ import androidx.work.WorkerParameters
 import com.example.myapplication.data.db.HabitDatabase
 import com.example.myapplication.data.repositories.dayrepository.DayWriteRepositoryImpl
 import com.example.myapplication.domain.model.DayModel
+import kotlinx.coroutines.flow.firstOrNull
 import java.util.Calendar
 import java.util.concurrent.TimeUnit
 
@@ -28,17 +29,19 @@ class SaveDayWorker(
     override suspend fun doWork(): Result {
         Log.d("ololo", "doWork")
         return try {
-            val currentDate = "2025-01-01"
+            val currentDate = "2025-01-10"
             Log.d("ololo", "Получена дата: $currentDate")
 
-            val existingDay = dayRepository.getDayByDate(currentDate)
+            val existingDay = dayRepository.getDayByDate(currentDate).firstOrNull()
+
             Log.d("ololo", "Получена дата из dao: $existingDay")
+
             if (existingDay == null) {
                 val newDay = DayModel(
                     date = currentDate,
                     isCompleted = true
                 )
-                dayRepository.insertOrUpdateHabitDay(newDay)
+                dayRepository.addHabitDay(newDay)
                 Log.d("SaveDayWorker", "Добавлена запись: $newDay")
             } else {
                 Log.d("SaveDayWorker", "Запись для $currentDate уже существует")
@@ -53,11 +56,10 @@ class SaveDayWorker(
 
 fun scheduleEndOfDayWork(context: Context) {
 
-    // Рассчитываем задержку до конца дня
     val now = Calendar.getInstance()
     val endOfDay = Calendar.getInstance().apply {
-        set(Calendar.HOUR_OF_DAY, 23)
-        set(Calendar.MINUTE, 59)
+        set(Calendar.HOUR_OF_DAY, 18)
+        set(Calendar.MINUTE, 13)
         set(Calendar.SECOND, 0)
         set(Calendar.MILLISECOND, 0)
     }
