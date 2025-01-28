@@ -3,7 +3,6 @@ package com.example.myapplication.presentation.fragments.progress
 import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +16,7 @@ import com.example.myapplication.domain.model.DayModel
 import com.example.myapplication.presentation.adapters.CalendarAdapter
 import com.example.myapplication.presentation.viewmodels.DayDataViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.YearMonth
@@ -46,31 +46,30 @@ class ProgressFragment : Fragment() {
         viewModel.fetchHabitsProgress(selectedDate)
 
         binding.btnPrev.setOnClickListener {
-            selectedDate = selectedDate.minusMonths(1)
-            Log.d("samal", "прошлый месяц: $selectedDate")
-            viewModel.fetchHabitsProgress(selectedDate)
+            viewModel.fetchHabitsProgress(viewModel.selectedDate.value.minusMonths(1))
         }
 
         binding.btnNext.setOnClickListener {
-            selectedDate = selectedDate.plusMonths(1)
-            Log.d("samal", "следующий месяц: $selectedDate")
-            viewModel.fetchHabitsProgress(selectedDate)
+            viewModel.fetchHabitsProgress(viewModel.selectedDate.value.plusMonths(1))
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.habitsProgress.collect { progressData ->
-                Log.d("samal", "данные с collect: $progressData")
+            viewModel.habitsProgress.collectLatest { progressData ->
                 val habitDays = if (progressData.isNotEmpty()) {
                     mapToDayModelList(progressData)
                 } else {
                     emptyList()
                 }
-                Log.d("samal", "обработанные данные с collect: $habitDays")
                 setMonthView(habitDays)
                 calculateCompletionPercentage(habitDays)
             }
         }
 
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.selectedDate.collectLatest {
+                setMonthView(emptyList())
+            }
+        }
 
     }
 
@@ -89,7 +88,6 @@ class ProgressFragment : Fragment() {
 
         val completedDays = days.count { it.isCompleted }
         val completionPercentage = (completedDays * 100) / totalDays
-        Log.d("ProgressFragment", "Days: ${days.count { it.isCompleted }} \n $completionPercentage \n $totalDays")
         val formattedPercentage = String.format("%.2f", completionPercentage)
         if (completionPercentage >= 80) {
             binding.tvProgressProcent.setTextColor(Color.GREEN)
@@ -111,14 +109,16 @@ class ProgressFragment : Fragment() {
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun setMonthView(habitDays: List<DayModel> = emptyList()) {
-        binding.monthYearTV.text = monthYearFromDate(selectedDate)
-        val daysInMonth: ArrayList<String> = daysInMonthArray(selectedDate)
+        binding.monthYearTV.text = monthYearFromDate(viewModel.selectedDate.value)
+        val daysInMonth: ArrayList<String> = daysInMonthArray(viewModel.selectedDate.value)
 
-        val calendarAdapter = CalendarAdapter(daysInMonth, habitDays, selectedDate)
+        val calendarAdapter = CalendarAdapter(daysInMonth, habitDays, viewModel.selectedDate.value)
         val layoutManager: RecyclerView.LayoutManager = GridLayoutManager(requireContext(), 7)
         binding.calendarRecyclerView.layoutManager = layoutManager
         binding.calendarRecyclerView.adapter = calendarAdapter
+        calendarAdapter.notifyDataSetChanged()
     }
 
     private fun daysInMonthArray(date: LocalDate): ArrayList<String> {

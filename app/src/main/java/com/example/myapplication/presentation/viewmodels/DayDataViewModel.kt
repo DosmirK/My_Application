@@ -27,6 +27,9 @@ class DayDataViewModel @Inject constructor(
     private val _habitsProgress = MutableStateFlow<Map<String, Boolean>>(emptyMap())
     val habitsProgress: StateFlow<Map<String, Boolean>> get() = _habitsProgress
 
+    private val _selectedDate = MutableStateFlow<LocalDate>(LocalDate.now())
+    val selectedDate: StateFlow<LocalDate> = _selectedDate
+
     fun loadHabitDays() {
         viewModelScope.launch {
             getAllHabitDaysUseCase.execute()
@@ -46,13 +49,13 @@ class DayDataViewModel @Inject constructor(
     }
 
     fun fetchHabitsProgress(date: LocalDate) {
+        _selectedDate.value = date
+        // Логика загрузки данных
         viewModelScope.launch {
-            Log.d("samal", "переданные данные в useCase: $date")
-            getHabitDayUseCase(date)
-                .collect { progressData ->
-                    Log.d("samal", "viewModel: $progressData")
-                    _habitsProgress.value = progressData
-                }
+            getHabitDayUseCase(date).collect { data->
+                // Пример вызова UseCase
+                _habitsProgress.value = data
+            }
         }
     }
 }

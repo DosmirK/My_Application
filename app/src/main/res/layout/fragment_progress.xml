@@ -15,12 +15,15 @@
         android:layout_marginBottom="20dp"
         android:layout_marginTop="14dp">
 
-        <com.google.android.material.button.MaterialButton
+        <ImageButton
             android:id="@+id/btn_prev"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/left"
+            android:contentDescription="@string/todo"
+            android:src="@drawable/vector__8_"
+            android:layout_gravity="center_vertical"
+            android:padding="12dp"
             android:background="@drawable/bg_calendar_button"
             android:textColor="@color/white"
             android:textStyle="bold"
@@ -31,17 +34,22 @@
             android:layout_width="0dp"
             android:layout_weight="2"
             android:layout_height="wrap_content"
-            android:text="Feb 2021"
+            android:layout_gravity="center_vertical"
+            tools:text="Feb 2021"
             android:textSize="20sp"
-            android:textAlignment="center"
+            android:gravity="center"
             android:textColor="@color/black"/>
 
-        <com.google.android.material.button.MaterialButton
+        <ImageButton
             android:id="@+id/btn_next"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/right"
+            android:contentDescription="@string/todo"
+            android:padding="12dp"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/vector__8_"
+            android:scaleX="-1"
             android:background="@drawable/bg_calendar_button"
             android:textColor="@color/white"
             android:textStyle="bold"
@@ -58,7 +66,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="SUN"
+            android:text="@string/sun"
             android:textColor="@color/gray"
             android:textAlignment="center"
             android:textSize="16sp"/>
@@ -67,7 +75,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="MON"
+            android:text="@string/mon"
             android:textColor="@color/gray"
             android:textAlignment="center"
             android:textSize="16sp"/>
@@ -76,7 +84,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="TUE"
+            android:text="@string/tue"
             android:textColor="@color/gray"
             android:textAlignment="center"
             android:textSize="16sp"/>
@@ -85,7 +93,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="WED"
+            android:text="@string/wed"
             android:textColor="@color/gray"
             android:textAlignment="center"
             android:textSize="16sp"/>
@@ -94,7 +102,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="THUR"
+            android:text="@string/thur"
             android:textColor="@color/gray"
             android:textAlignment="center"
             android:textSize="16sp"/>
@@ -103,7 +111,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="FRI"
+            android:text="@string/fri"
             android:textColor="@color/gray"
             android:textAlignment="center"
             android:textSize="16sp"/>
@@ -112,7 +120,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="SAT"
+            android:text="@string/sat"
             android:textColor="@color/gray"
             android:textAlignment="center"
             android:textSize="16sp"/>

@@ -10,13 +10,12 @@
     <string name="habit_name">habit name</string>
     <string name="delete">Delete</string>
     <string name="update">Update</string>
-    <string name="right">-></string>
-    <string name="left"><![CDATA[<-]]></string>
-    <string name="sat">SAT</string>
-    <string name="fri">FRI</string>
-    <string name="thur">THUR</string>
-    <string name="wed">WED</string>
-    <string name="tue">TUE</string>
-    <string name="mon">MON</string>
-    <string name="sun">SUN</string>
+    <string name="sat">СБ</string>
+    <string name="fri">ПТ</string>
+    <string name="thur">ЧТ</string>
+    <string name="wed">СР</string>
+    <string name="tue">ВТ</string>
+    <string name="mon">ПН</string>
+    <string name="sun">ВС</string>
+    <string name="todo">TODO</string>
 </resources>
