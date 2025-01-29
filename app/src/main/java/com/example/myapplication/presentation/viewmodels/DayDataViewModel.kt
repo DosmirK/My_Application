@@ -10,6 +10,8 @@ import com.example.myapplication.domain.usecase.dayusecase.SaveHabitDayUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
@@ -24,13 +26,26 @@ class DayDataViewModel @Inject constructor(
     private val _habitDays = MutableStateFlow<List<DayModel>>(emptyList())
     val habitDays: StateFlow<List<DayModel>> get() = _habitDays
 
-    private val _habitsProgress = MutableStateFlow<Map<String, Boolean>>(emptyMap())
-    val habitsProgress: StateFlow<Map<String, Boolean>> get() = _habitsProgress
+    private val _habitsProgress = MutableStateFlow<List<DayModel>>(emptyList())
+    val habitsProgress: StateFlow<List<DayModel>> get() = _habitsProgress
 
-    private val _selectedDate = MutableStateFlow<LocalDate>(LocalDate.now())
+    private val _selectedDate = MutableStateFlow(LocalDate.now())
     val selectedDate: StateFlow<LocalDate> = _selectedDate
 
-    fun loadHabitDays() {
+    fun updateSelectedDate(date: LocalDate) {
+        _selectedDate.value = date
+    }
+
+    init {
+        viewModelScope.launch {
+            _selectedDate.collectLatest { date ->
+                fetchHabitsProgress(date)
+                Log.d("simba", "вызов collectLatest в Init \n дата: $date")
+            }
+        }
+    }
+
+    private fun loadHabitDays() {
         viewModelScope.launch {
             getAllHabitDaysUseCase.execute()
                 .collect { days ->
@@ -49,13 +64,18 @@ class DayDataViewModel @Inject constructor(
     }
 
     fun fetchHabitsProgress(date: LocalDate) {
-        _selectedDate.value = date
-        // Логика загрузки данных
         viewModelScope.launch {
-            getHabitDayUseCase(date).collect { data->
-                // Пример вызова UseCase
-                _habitsProgress.value = data
-            }
+            Log.d("simba", "отправленная дата: $date")
+            getHabitDayUseCase(date)
+                .catch { emit(emptyList()) }
+                .collect { data ->
+                    Log.d("simba", "вызов collectLatest во ViewModel: $data \n дата: $date")
+                    val habitDays = data.map { (date, isCompleted) -> DayModel(date, isCompleted) }
+                    if (_habitsProgress.value != habitDays) {
+                        _habitsProgress.value = habitDays
+                    }
+                }
         }
     }
+
 }
