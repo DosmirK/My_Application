@@ -1,6 +1,5 @@
 package com.example.myapplication.presentation.adapters
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,55 +13,97 @@ class CalendarAdapter(
     private val daysOfMonth: ArrayList<String>,
     private val habitDays: List<DayModel>,
     private val selectedDate: LocalDate
-) : RecyclerView.Adapter<CalendarAdapter.CalendarViewHolder>() {
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    inner class CalendarViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    private val TYPE_GREEN = 1
+    private val TYPE_OTHER = 2
+
+    inner class GreenDayViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val dayOfMonth: TextView = itemView.findViewById(R.id.cellDayText)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalendarViewHolder {
-        val inflater = LayoutInflater.from(parent.context)
-        val view: View = inflater.inflate(R.layout.calendar_cell, parent, false)
-        val layoutParams = view.layoutParams
-        layoutParams.height = (parent.height * 0.122222222).toInt()
-        return CalendarViewHolder(view)
+    inner class OtherDayViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val dayOfMonth: TextView = itemView.findViewById(R.id.cellDayText)
     }
 
-    override fun onBindViewHolder(holder: CalendarViewHolder, position: Int) {
+    override fun getItemViewType(position: Int): Int {
         val day = daysOfMonth[position]
-        holder.dayOfMonth.text = day
+        return if (day.isNotEmpty()) {
+            val date = LocalDate.of(selectedDate.year, selectedDate.month, day.toInt())
+            val habitDay = habitDays.find { LocalDate.parse(it.date) == date }
+            val today = LocalDate.now()
 
+            if (date.isBefore(today) || date.isEqual(today)) {
+                when (habitDay?.isCompleted) {
+                    true -> TYPE_GREEN
+                    false, null -> TYPE_OTHER
+                }
+            } else {
+                TYPE_OTHER
+            }
+        } else {
+            TYPE_OTHER
+        }
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        val inflater = LayoutInflater.from(parent.context)
+        return if (viewType == TYPE_GREEN) {
+            val view: View = inflater.inflate(R.layout.calendar_cell, parent, false)
+            val layoutParams = view.layoutParams
+            layoutParams.height = (parent.height * 0.111111111).toInt()
+            GreenDayViewHolder(view)
+        } else {
+            val view: View = inflater.inflate(R.layout.calendar_cell_other, parent, false)
+            val layoutParams = view.layoutParams
+            layoutParams.height = (parent.height * 0.111111111).toInt()
+            OtherDayViewHolder(view)
+        }
+    }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val day = daysOfMonth[position]
         if (day.isNotEmpty()) {
             val date = LocalDate.of(selectedDate.year, selectedDate.month, day.toInt())
             val habitDay = habitDays.find { LocalDate.parse(it.date) == date }
-            Log.e("ololo", "habitDay: $habitDay")
-
             val today = LocalDate.now()
 
-            when {
-                date.isBefore(today) -> {
-                    when (habitDay?.isCompleted) {
-                        true -> {
-                            holder.dayOfMonth.setBackgroundResource(R.drawable.bg_complited_day)
-                        }
-                        false, null -> {
-                            holder.dayOfMonth.setBackgroundResource(R.drawable.bg_missed_day)
+            if (holder is GreenDayViewHolder) {
+                holder.dayOfMonth.text = day
+                when (habitDay?.isCompleted) {
+                    true -> {
+                        val prevDate = date.minusDays(1)
+                        val nextDate = date.plusDays(1)
+                        val isPrevCompleted = habitDays.any { LocalDate.parse(it.date) == prevDate && it.isCompleted }
+                        val isNextCompleted = habitDays.any { LocalDate.parse(it.date) == nextDate && it.isCompleted }
+
+                        when {
+                            isPrevCompleted && isNextCompleted -> {
+                                holder.dayOfMonth.setBackgroundResource(R.drawable.bg_green_middle)
+                            }
+                            isPrevCompleted -> {
+                                holder.dayOfMonth.setBackgroundResource(R.drawable.bg_green_end)
+                            }
+                            isNextCompleted -> {
+                                holder.dayOfMonth.setBackgroundResource(R.drawable.bg_green_start)
+                            }
+                            else -> {
+                                holder.dayOfMonth.setBackgroundResource(R.drawable.bg_green_single)
+                            }
                         }
                     }
-                }
-                date.isEqual(today) -> {
-                    if (habitDay?.isCompleted == true) {
-                        holder.dayOfMonth.setBackgroundResource(R.drawable.bg_complited_day)
-                    } else {
+                    false, null -> {
                         holder.dayOfMonth.setBackgroundResource(R.drawable.bg_missed_day)
                     }
                 }
-                date.isAfter(today) -> {
+            } else if (holder is OtherDayViewHolder) {
+                holder.dayOfMonth.text = day
+                if (date.isBefore(today) || date.isEqual(today)) {
+                    holder.dayOfMonth.setBackgroundResource(R.drawable.bg_missed_day)
+                } else {
                     holder.dayOfMonth.setBackgroundResource(R.drawable.bg_other_days)
                 }
             }
-        } else {
-            holder.dayOfMonth.setBackgroundResource(0)
         }
     }
 
