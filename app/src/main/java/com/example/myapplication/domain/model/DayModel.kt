@@ -6,5 +6,5 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class DayModel(
     val date: String,
-    val isCompleted: Boolean
+    val isCompleted: Int
 ): Parcelable

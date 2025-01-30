@@ -140,10 +140,9 @@ class HomeFragment : Fragment() {
     }
 
     private fun saveProgressDay(progress: Int) {
-        val isCompleted = progress == 100
         val newDayData = DayModel(
             date = LocalDate.now().toString(),
-            isCompleted = isCompleted
+            isCompleted = progress
         )
         viewModelDay.saveHabitDay(newDayData)
     }

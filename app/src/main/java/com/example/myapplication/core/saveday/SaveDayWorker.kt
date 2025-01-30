@@ -39,7 +39,7 @@ class SaveDayWorker(
             if (existingDay == null) {
                 val newDay = DayModel(
                     date = currentDate,
-                    isCompleted = true
+                    isCompleted = 0
                 )
                 dayRepository.addHabitDay(newDay)
                 Log.d("SaveDayWorker", "Добавлена запись: $newDay")

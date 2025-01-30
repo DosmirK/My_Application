@@ -35,8 +35,8 @@ class CalendarAdapter(
 
             if (date.isBefore(today) || date.isEqual(today)) {
                 when (habitDay?.isCompleted) {
-                    true -> TYPE_GREEN
-                    false, null -> TYPE_OTHER
+                    in 50..100-> TYPE_GREEN
+                    else -> TYPE_OTHER
                 }
             } else {
                 TYPE_OTHER
@@ -71,11 +71,11 @@ class CalendarAdapter(
             if (holder is GreenDayViewHolder) {
                 holder.dayOfMonth.text = day
                 when (habitDay?.isCompleted) {
-                    true -> {
+                    100 -> {
                         val prevDate = date.minusDays(1)
                         val nextDate = date.plusDays(1)
-                        val isPrevCompleted = habitDays.any { LocalDate.parse(it.date) == prevDate && it.isCompleted }
-                        val isNextCompleted = habitDays.any { LocalDate.parse(it.date) == nextDate && it.isCompleted }
+                        val isPrevCompleted = habitDays.any { LocalDate.parse(it.date) == prevDate && it.isCompleted == 100 }
+                        val isNextCompleted = habitDays.any { LocalDate.parse(it.date) == nextDate && it.isCompleted == 100 }
 
                         when {
                             isPrevCompleted && isNextCompleted -> {
@@ -92,7 +92,28 @@ class CalendarAdapter(
                             }
                         }
                     }
-                    false, null -> {
+                    in 50..99 -> {
+                        val prevDate = date.minusDays(1)
+                        val nextDate = date.plusDays(1)
+                        val isPrevCompleted = habitDays.any { LocalDate.parse(it.date) == prevDate && it.isCompleted in 50..99 }
+                        val isNextCompleted = habitDays.any { LocalDate.parse(it.date) == nextDate && it.isCompleted in 50..99 }
+
+                        when {
+                            isPrevCompleted && isNextCompleted -> {
+                                holder.dayOfMonth.setBackgroundResource(R.drawable.bg_yellow_middle)
+                            }
+                            isPrevCompleted -> {
+                                holder.dayOfMonth.setBackgroundResource(R.drawable.bg_yellow_end)
+                            }
+                            isNextCompleted -> {
+                                holder.dayOfMonth.setBackgroundResource(R.drawable.bg_yellow_start)
+                            }
+                            else -> {
+                                holder.dayOfMonth.setBackgroundResource(R.drawable.bg_yellow_single)
+                            }
+                        }
+                    }
+                    0, null -> {
                         holder.dayOfMonth.setBackgroundResource(R.drawable.bg_missed_day)
                     }
                 }

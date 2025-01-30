@@ -81,7 +81,7 @@ class ProgressFragment : Fragment() {
         val currentYear = LocalDate.now().year
         val totalDays = YearMonth.of(currentYear, currentMonth).lengthOfMonth().toFloat()
 
-        val completedDays = days.count { it.isCompleted }
+        val completedDays = days.count { it.isCompleted  == 100 }
         val completionPercentage = (completedDays * 100) / totalDays
         val formattedPercentage = String.format("%.2f", completionPercentage)
         if (completionPercentage >= 80) {

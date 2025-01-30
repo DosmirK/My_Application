@@ -31,6 +31,7 @@ navigationUiKtxVersion = "2.8.5"
 roomRuntime = "2.6.1"
 workRuntimeKtx = "2.10.0"
 hiltCommon = "1.2.0"
+kotlinVersion = "2.0.0"
 
 [libraries]
 androidx-appcompat-v161 = { module = "androidx.appcompat:appcompat", version.ref = "appcompatVersion" }
@@ -60,3 +61,4 @@ androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifec
 androidx-hilt-common = { group = "androidx.hilt", name = "hilt-common", version.ref = "hiltCommon" }
 
 [plugins]
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlinVersion" }

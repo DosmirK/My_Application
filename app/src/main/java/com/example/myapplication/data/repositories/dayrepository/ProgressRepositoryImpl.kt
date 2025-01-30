@@ -28,7 +28,7 @@ class ProgressRepositoryImpl @Inject constructor(
                     if (dayData != null) {
                         DayModel(dayData.date, dayData.isCompleted)
                     } else {
-                        DayModel(date.toString(), false)  // isCompleted = false для пустых данных
+                        DayModel(date.toString(), 0)
                     }
                 }
             }

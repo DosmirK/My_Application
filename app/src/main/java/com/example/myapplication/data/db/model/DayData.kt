@@ -7,5 +7,5 @@ import androidx.room.PrimaryKey
 data class DayData(
     @PrimaryKey(autoGenerate = false)
     val date: String,
-    val isCompleted: Boolean
+    val isCompleted: Int
 )
