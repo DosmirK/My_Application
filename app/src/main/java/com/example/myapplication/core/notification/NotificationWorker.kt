@@ -16,11 +16,14 @@ class NotificationWorker(
 ) : Worker(context, workerParams) {
 
     override fun doWork(): Result {
-        Log.d("ololo", "Работа началась")
-
-        sendNotification(applicationContext)
-
-        return Result.success()
+        return try {
+            sendNotification(applicationContext)
+            Log.d("ololo", "Уведомление успешно отправлено!")
+            Result.success()
+        } catch (e: Exception) {
+            Log.e("ololo", "Ошибка при отправке уведомления", e)
+            Result.failure()
+        }
     }
 
     private fun sendNotification(context: Context) {
@@ -36,8 +39,8 @@ fun scheduleNotificationWork(context: Context) {
 
     val workManager = WorkManager.getInstance(context)
     workManager.enqueueUniquePeriodicWork(
-        "notification_work",
-        ExistingPeriodicWorkPolicy.UPDATE,
+        "daily_notification_work",
+        ExistingPeriodicWorkPolicy.KEEP,
         workRequest
     )
 }

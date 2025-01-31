@@ -10,12 +10,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.databinding.FragmentProgressBinding
 import com.example.myapplication.domain.model.DayModel
 import com.example.myapplication.presentation.adapters.CalendarAdapter
-import com.example.myapplication.presentation.viewmodels.DayDataViewModel
+import com.example.myapplication.presentation.viewmodels.dayviewmodel.DayDataViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -46,21 +47,22 @@ class ProgressFragment : Fragment() {
 
         viewModel.fetchHabitsProgress(selectedDate)
 
+        binding.tvProgressProcent.setOnClickListener {
+            findNavController().navigate(ProgressFragmentDirections.actionNavigationProgressToGraphFragment())
+        }
+
         binding.btnPrev.setOnClickListener {
             val newDate = viewModel.selectedDate.value.minusMonths(1)
             viewModel.updateSelectedDate(newDate)
-            Log.d("simba", "прошлый месяц: ${viewModel.selectedDate.value}")
         }
 
         binding.btnNext.setOnClickListener {
             val newDate = viewModel.selectedDate.value.plusMonths(1)
             viewModel.updateSelectedDate(newDate)
-            Log.d("simba", "будуший месяц: ${viewModel.selectedDate.value}")
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.habitsProgress.collectLatest { progressData ->
-                Log.d("simba", "вызов collectLatest во фрагменте: $progressData")
                 setMonthView(progressData)
                 calculateCompletionPercentage(progressData)
             }
@@ -103,7 +105,6 @@ class ProgressFragment : Fragment() {
         val daysInMonth: ArrayList<String> = daysInMonthArray(viewModel.selectedDate.value)
 
         val calendarAdapter = CalendarAdapter(daysInMonth, habitDays, viewModel.selectedDate.value)
-        Log.d("simba", "Переданные данные в адаптер: $daysInMonth, $habitDays, ${viewModel.selectedDate.value}")
         val layoutManager: RecyclerView.LayoutManager = GridLayoutManager(requireContext(), 7)
         binding.calendarRecyclerView.layoutManager = layoutManager
         binding.calendarRecyclerView.adapter = calendarAdapter

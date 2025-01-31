@@ -2,6 +2,7 @@ package com.example.myapplication.di
 
 import com.example.myapplication.data.db.dao.DayDataDao
 import com.example.myapplication.data.db.dao.HabitDataDao
+import com.example.myapplication.data.repositories.dayrepository.AnalyticsRepositoryImpl
 import com.example.myapplication.data.repositories.dayrepository.DayReadOnlyRepositoryImpl
 import com.example.myapplication.data.repositories.dayrepository.DayWriteRepositoryImpl
 import com.example.myapplication.data.repositories.dayrepository.ProgressRepositoryImpl
@@ -9,6 +10,7 @@ import com.example.myapplication.data.repositories.habitrepository.HabitResetRep
 import com.example.myapplication.data.repositories.habitrepository.HabitStatsRepositoryImpl
 import com.example.myapplication.data.repositories.habitrepository.ReadOnlyHabitRepositoryImpl
 import com.example.myapplication.data.repositories.habitrepository.WriteHabitRepositoryImpl
+import com.example.myapplication.domain.repositories.dayrepository.AnalyticsRepository
 import com.example.myapplication.domain.repositories.dayrepository.DayReadOnlyRepository
 import com.example.myapplication.domain.repositories.dayrepository.DayWriteRepository
 import com.example.myapplication.domain.repositories.dayrepository.ProgressRepository
@@ -82,5 +84,14 @@ object RepositoryModule {
     ): WriteHabitRepository {
         return WriteHabitRepositoryImpl(dao)
     }
+
+    @Provides
+    @Singleton
+    fun provideAnalyticsRepository(
+        dao:DayDataDao
+    ): AnalyticsRepository {
+        return AnalyticsRepositoryImpl(dao)
+    }
+
 
 }

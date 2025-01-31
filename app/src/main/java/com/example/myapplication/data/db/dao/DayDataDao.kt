@@ -6,7 +6,6 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.myapplication.data.db.model.DayData
 import kotlinx.coroutines.flow.Flow
-import java.time.LocalDate
 
 @Dao
 interface DayDataDao {
@@ -24,5 +23,8 @@ interface DayDataDao {
     fun getAllHabitDays(): Flow<List<DayData>>
 
     @Query("SELECT * FROM dayData WHERE date BETWEEN :startDate AND :endDate")
-    fun getProgressBetweenDates(startDate: LocalDate, endDate: LocalDate): Flow<List<DayData>>
+    fun getProgressBetweenDates(startDate: String, endDate: String): Flow<List<DayData>>
+
+    @Query("SELECT * FROM dayData WHERE date <= :endDate")
+    fun getProgressUntilToday(endDate: String): Flow<List<DayData>>
 }

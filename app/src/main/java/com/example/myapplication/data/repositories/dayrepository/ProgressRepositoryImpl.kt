@@ -19,7 +19,7 @@ class ProgressRepositoryImpl @Inject constructor(
 
         val allDatesInMonth = generateDatesInRange(startOfMonth, endOfMonth)
 
-        return dao.getProgressBetweenDates(startOfMonth, endOfMonth)
+        return dao.getProgressBetweenDates(startOfMonth.toString(), endOfMonth.toString())
             .map { progressList ->
                 val progressMap = progressList.associateBy { LocalDate.parse(it.date, DateTimeFormatter.ISO_DATE) }
 

@@ -12,6 +12,7 @@ import com.example.myapplication.data.repositories.dayrepository.DayWriteReposit
 import com.example.myapplication.domain.model.DayModel
 import kotlinx.coroutines.flow.firstOrNull
 import java.util.Calendar
+import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 class SaveDayWorker(
@@ -29,7 +30,7 @@ class SaveDayWorker(
     override suspend fun doWork(): Result {
         Log.d("ololo", "doWork")
         return try {
-            val currentDate = "2025-01-10"
+            val currentDate = java.text.SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Calendar.getInstance().time)
             Log.d("ololo", "Получена дата: $currentDate")
 
             val existingDay = dayRepository.getDayByDate(currentDate).firstOrNull()
@@ -58,8 +59,8 @@ fun scheduleEndOfDayWork(context: Context) {
 
     val now = Calendar.getInstance()
     val endOfDay = Calendar.getInstance().apply {
-        set(Calendar.HOUR_OF_DAY, 18)
-        set(Calendar.MINUTE, 13)
+        set(Calendar.HOUR_OF_DAY, 23)
+        set(Calendar.MINUTE, 59)
         set(Calendar.SECOND, 0)
         set(Calendar.MILLISECOND, 0)
     }
@@ -73,7 +74,7 @@ fun scheduleEndOfDayWork(context: Context) {
         val workManager = WorkManager.getInstance(context)
         workManager.enqueueUniqueWork(
             "end_of_day_work",
-            ExistingWorkPolicy.REPLACE,
+            ExistingWorkPolicy.KEEP,
             workRequest
         )
 

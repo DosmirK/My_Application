@@ -20,7 +20,7 @@ import com.example.myapplication.core.utils.Extensions.gone
 import com.example.myapplication.core.utils.Extensions.showToast
 import com.example.myapplication.core.utils.Extensions.visible
 import com.example.myapplication.presentation.adapters.HabitsAdapter
-import com.example.myapplication.presentation.viewmodels.DayDataViewModel
+import com.example.myapplication.presentation.viewmodels.dayviewmodel.DayDataViewModel
 import com.example.myapplication.presentation.viewmodels.habitviewmodel.GetAllHabitViewModel
 import com.example.myapplication.presentation.viewmodels.habitviewmodel.HabitStatsViewModel
 import com.example.myapplication.presentation.viewmodels.habitviewmodel.ResetHabitViewModel

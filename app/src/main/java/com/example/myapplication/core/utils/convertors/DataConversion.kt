@@ -5,24 +5,10 @@ import com.example.myapplication.data.db.model.Habit
 import com.example.myapplication.domain.model.DayModel
 import com.example.myapplication.domain.model.HabitModel
 
-fun HabitModel.toHabit(): Habit {
-    return Habit(
-        id = id,
-        name = name,
-        isCompleted = isCompleted
-    )
-}
+fun HabitModel.toHabit() = Habit(id, name, isCompleted)
 
-fun DayModel.toDayData(): DayData {
-    return DayData(
-        date = date,
-        isCompleted = isCompleted
-    )
-}
+fun DayModel.toDayData() = DayData(date, isCompleted)
 
-fun DayData.toDayModel(): DayModel {
-    return DayModel(
-        date = date,
-        isCompleted = isCompleted
-    )
-}
+fun DayData.toDayModel() = DayModel(date, isCompleted)
+
+fun Habit.toHabitModel() = HabitModel(id, name, isCompleted)

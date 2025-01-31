@@ -2,6 +2,7 @@
 buildscript {
     repositories {
         google()
+        maven("https://jitpack.io")
     }
     dependencies {
         classpath(libs.androidx.navigation.safe.args.gradle.plugin.v277)
