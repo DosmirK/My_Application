@@ -1,4 +1,4 @@
-package com.example.myapplication.presentation.fragments.progress
+package com.example.myapplication.presentation.fragments.progress.analitics
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.graphics.Color
 import android.graphics.Paint
+import android.util.Log
 import androidx.fragment.app.viewModels
 import com.example.myapplication.databinding.FragmentGraphBinding
 import com.github.mikephil.charting.data.CandleData
@@ -15,8 +16,6 @@ import com.github.mikephil.charting.data.CandleEntry
 import androidx.lifecycle.lifecycleScope
 import com.example.myapplication.domain.model.DayModel
 import com.example.myapplication.presentation.viewmodels.dayviewmodel.AnalyticsViewModel
-import com.github.mikephil.charting.components.XAxis
-import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -35,7 +34,7 @@ class GraphFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentGraphBinding.inflate(inflater, container, false)
+        _binding = FragmentGraphBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
 
@@ -46,6 +45,7 @@ class GraphFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.progressData.collectLatest { dayDataList ->
+                Log.d("fefer", "полуеный список: $dayDataList")
                 if (dayDataList.isNotEmpty()){
                     updateChart(dayDataList)
                 }
@@ -60,11 +60,17 @@ class GraphFragment : Fragment() {
             description.text = "Прогресс до сегодня"
             setPinchZoom(true)
             isDragEnabled = true
+            isScaleXEnabled = true  // Разрешаем масштабирование по оси X
+            isScaleYEnabled = false // Блокируем масштабирование по оси Y
+            isDragXEnabled = true   // Разрешаем горизонтальную прокрутку
+            setVisibleXRangeMinimum(5f)  // Минимальное количество свечей на экране
+            setVisibleXRangeMaximum(10f) // Максимальное количество свечей на экране
             animateY(1000)
             legend.isEnabled = false
             setDrawGridBackground(false)
         }
     }
+
 
     private fun updateChart(dayDataList: List<DayModel>) {
         val candleEntries = mutableListOf<CandleEntry>()
@@ -121,16 +127,14 @@ class GraphFragment : Fragment() {
         val candleData = CandleData(dataSet)
         binding.candleStickChart.apply {
             data = candleData
-            invalidate()
-        }
 
-        val xAxis = binding.candleStickChart.xAxis
-        xAxis.apply {
-            valueFormatter = IndexAxisValueFormatter(dateLabels)
-            position = XAxis.XAxisPosition.BOTTOM
-            granularity = 1f
-            setLabelCount(dayDataList.size, true)
-            textSize = 10f
+            xAxis.setDrawLabels(false)
+
+            val markerView = CustomMarkerView(requireContext(), dateLabels)
+            markerView.chartView = this
+            marker = markerView
+
+            invalidate()
         }
     }
 

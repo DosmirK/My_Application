@@ -52,7 +52,7 @@
     </fragment>
     <fragment
         android:id="@+id/graphFragment"
-        android:name="com.example.myapplication.presentation.fragments.progress.GraphFragment"
+        android:name="com.example.myapplication.presentation.fragments.progress.analitics.GraphFragment"
         android:label="fragment_graph"
         tools:layout="@layout/fragment_graph" />
 </navigation>

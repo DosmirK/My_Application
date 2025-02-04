@@ -3,7 +3,6 @@ package com.example.myapplication.presentation.fragments.progress
 import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,7 +44,7 @@ class ProgressFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.fetchHabitsProgress(selectedDate)
+        viewModel.updateSelectedDate(selectedDate)
 
         binding.tvProgressProcent.setOnClickListener {
             findNavController().navigate(ProgressFragmentDirections.actionNavigationProgressToGraphFragment())
@@ -136,6 +135,7 @@ class ProgressFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        viewModel.updateSelectedDate(selectedDate)
         _binding = null
     }
 }
