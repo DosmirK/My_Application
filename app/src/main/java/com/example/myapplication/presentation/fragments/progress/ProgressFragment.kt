@@ -46,7 +46,7 @@ class ProgressFragment : Fragment() {
 
         viewModel.updateSelectedDate(selectedDate)
 
-        binding.tvProgressProcent.setOnClickListener {
+        binding.btnAnalytics.setOnClickListener {
             findNavController().navigate(ProgressFragmentDirections.actionNavigationProgressToGraphFragment())
         }
 

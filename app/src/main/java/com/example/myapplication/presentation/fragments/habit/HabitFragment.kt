@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
-import com.example.myapplication.databinding.FragmentHabitBinding
+import com.example.myapplication.databinding.FragmentAddHabitBinding
 import com.example.myapplication.domain.model.HabitModel
 import com.example.myapplication.presentation.viewmodels.habitviewmodel.WriteHabitViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class HabitFragment : Fragment() {
 
-    private var _binding: FragmentHabitBinding? = null
+    private var _binding: FragmentAddHabitBinding? = null
     private val binding get() = _binding!!
 
     private val habitViewModel : WriteHabitViewModel by viewModels()
@@ -26,7 +26,7 @@ class HabitFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentHabitBinding.inflate(layoutInflater, container, false)
+        _binding = FragmentAddHabitBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
 

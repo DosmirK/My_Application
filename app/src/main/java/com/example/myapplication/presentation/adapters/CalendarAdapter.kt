@@ -1,5 +1,6 @@
 package com.example.myapplication.presentation.adapters
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -49,12 +50,12 @@ class CalendarAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return if (viewType == TYPE_GREEN) {
-            val view: View = inflater.inflate(R.layout.calendar_cell, parent, false)
+            val view: View = inflater.inflate(R.layout.item_calendar_cell, parent, false)
             val layoutParams = view.layoutParams
             layoutParams.height = (parent.height * 0.111111111).toInt()
             GreenDayViewHolder(view)
         } else {
-            val view: View = inflater.inflate(R.layout.calendar_cell_other, parent, false)
+            val view: View = inflater.inflate(R.layout.item_calendar_cell_other, parent, false)
             val layoutParams = view.layoutParams
             layoutParams.height = (parent.height * 0.111111111).toInt()
             OtherDayViewHolder(view)

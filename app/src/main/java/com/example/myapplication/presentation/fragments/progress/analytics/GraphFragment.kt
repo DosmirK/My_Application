@@ -1,4 +1,4 @@
-package com.example.myapplication.presentation.fragments.progress.analitics
+package com.example.myapplication.presentation.fragments.progress.analytics
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -60,11 +60,11 @@ class GraphFragment : Fragment() {
             description.text = "Прогресс до сегодня"
             setPinchZoom(true)
             isDragEnabled = true
-            isScaleXEnabled = true  // Разрешаем масштабирование по оси X
-            isScaleYEnabled = false // Блокируем масштабирование по оси Y
-            isDragXEnabled = true   // Разрешаем горизонтальную прокрутку
-            setVisibleXRangeMinimum(5f)  // Минимальное количество свечей на экране
-            setVisibleXRangeMaximum(10f) // Максимальное количество свечей на экране
+            isScaleXEnabled = true
+            isScaleYEnabled = false
+            isDragXEnabled = true
+            setVisibleXRangeMinimum(5f)
+            setVisibleXRangeMaximum(10f)
             animateY(1000)
             legend.isEnabled = false
             setDrawGridBackground(false)

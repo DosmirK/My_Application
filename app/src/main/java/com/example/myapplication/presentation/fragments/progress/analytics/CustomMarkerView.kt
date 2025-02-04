@@ -1,4 +1,4 @@
-package com.example.myapplication.presentation.fragments.progress.analitics
+package com.example.myapplication.presentation.fragments.progress.analytics
 
 import android.annotation.SuppressLint
 import android.content.Context

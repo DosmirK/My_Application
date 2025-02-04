@@ -18,4 +18,5 @@
     <string name="mon">ПН</string>
     <string name="sun">ВС</string>
     <string name="todo">TODO</string>
+    <string name="open_analytics">Открвть аналитику</string>
 </resources>
