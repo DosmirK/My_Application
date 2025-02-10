@@ -3,6 +3,7 @@ package com.example.myapplication.presentation.fragments.progress
 import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -61,7 +62,8 @@ class ProgressFragment : Fragment() {
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.habitsProgress.collectLatest { progressData ->
+            viewModel.habitsProgress.collect { progressData ->
+                Log.d("calendar", "данные: $progressData")
                 setMonthView(progressData)
                 calculateCompletionPercentage(progressData)
             }
