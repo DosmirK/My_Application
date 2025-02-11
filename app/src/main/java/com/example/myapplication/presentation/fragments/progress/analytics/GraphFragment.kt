@@ -48,6 +48,7 @@ class GraphFragment : Fragment() {
                 Log.d("fefer", "полуеный список: $dayDataList")
                 if (dayDataList.isNotEmpty()){
                     updateChart(dayDataList)
+                    showReviewOptions(dayDataList.takeLast(30))
                 }
             }
         }
@@ -136,6 +137,17 @@ class GraphFragment : Fragment() {
 
             invalidate()
         }
+    }
+
+    private fun showReviewOptions(lastData: List<DayModel>) {
+        val reviewOptions = when {
+            lastData.all { it.isCompleted == 100 } -> "Отличный прогресс! Вы почти завершили."
+            lastData.any { it.isCompleted >= 50 } -> "Вы на полпути! Продолжайте работать!"
+            lastData.any { it.isCompleted > 0 } -> "Есть прогресс, но нужно ускориться."
+            else -> "Небольшой прогресс. Попробуйте улучшить результат!"
+        }
+
+        binding.analysisTv.text = reviewOptions
     }
 
     override fun onDestroyView() {
